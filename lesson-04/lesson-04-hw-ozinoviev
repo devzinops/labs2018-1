@@ -1,0 +1,80 @@
+# *** Connect to remote host ***
+oleh@helpdesk:~$ ssh -p 3822 root@yoko.ukrtux.com
+root@yoko.ukrtux.com's password: 
+Last login: Sun Aug  5 20:36:07 2018 from 194.44.30.194
+root@99fed5271af6:~# 
+
+# *** Change password ***
+root@99fed5271af6:~# passwd
+Enter new UNIX password: 
+Retype new UNIX password: 
+passwd: password updated successfully
+root@99fed5271af6:~# 
+
+# *** copy my key to remote host ***
+oleh@helpdesk:~$ scp -P 3822 /home/oleh/.ssh/id_rsa.pub  root@yoko.ukrtux.com:~/.ssh/id_rsa_ozin.pub
+root@yoko.ukrtux.com's password: 
+id_rsa.pub                                                                             100%  395     1.5KB/s   00:00    
+oleh@helpdesk:~$ 
+
+# *** go to remote host and copy keys to file "authorized_keys" ***
+oleh@helpdesk:~$ ssh -p 3822 root@yoko.ukrtux.com
+root@yoko.ukrtux.com's password: 
+Last login: Mon Aug  6 20:26:48 2018 from 194.44.30.194
+root@99fed5271af6:~# ls -ls
+total 0
+root@99fed5271af6:~# ls -ls ~/.ssh/
+total 8
+4 -rw-r--r-- 3 root root 395 Dec 19  2017 authorized_keys
+4 -rw-r--r-- 1 root root 395 Aug  6 21:05 id_rsa_ozin.pub
+root@99fed5271af6:~# 
+
+# *** delete my pub-key ***
+root@99fed5271af6:~# rm ~/.ssh/id_rsa_ozin.pub 
+root@99fed5271af6:~# ls -ls ~/.ssh/
+total 4
+4 -rw-r--r-- 1 root root 790 Aug  6 21:10 authorized_keys
+root@99fed5271af6:~# 
+
+# *** change rights to 400 for files "authorized_keys" ***
+root@99fed5271af6:~# chmod 400 ~/.ssh/authorized_keys 
+root@99fed5271af6:~# ls -ls ~/.ssh/
+total 4
+4 -r-------- 1 root root 790 Aug  6 21:10 authorized_keys
+root@99fed5271af6:~# 
+
+# *** and now, I connect to remote host with ssh-kyes. The first time I need to enter PathPharse  ***
+oleh@helpdesk:~$ ssh -p 3822 root@yoko.ukrtux.com
+Last login: Mon Aug  6 21:13:49 2018 from 194.44.30.194
+root@99fed5271af6:~#
+
+# *** several command via ssh ***
+oleh@helpdesk:~$ ssh -p 3822 root@yoko.ukrtux.com 'w'
+ 21:28:14 up 11 days,  9:56,  0 users,  load average: 0.23, 0.10, 0.08
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+oleh@helpdesk:~$ ssh -p 3822 root@yoko.ukrtux.com 'uptime'
+ 21:29:22 up 11 days,  9:57,  0 users,  load average: 0.19, 0.11, 0.09
+oleh@helpdesk:~$ ssh -p 3822 root@yoko.ukrtux.com 'free'
+              total        used        free      shared  buff/cache   available
+Mem:        3355916      926108      398288      173456     2031520     2166416
+Swap:       1048572          28     1048544
+oleh@helpdesk:~$
+
+# *** Create my own config for my remote Host and check ***
+oleh@helpdesk:~$ vim ~/.ssh/config
+oleh@helpdesk:~$ ssh remotehost
+Last login: Mon Aug  6 21:21:15 2018 from 194.44.30.194
+root@uname:~# 
+
+# *** My config ***
+oleh@helpdesk:~$ cat ~/.ssh/config 
+Host remotehost
+HostName yoko.ukrtux.com
+Port 3822
+User root
+oleh@helpdesk:~$ 
+
+
+
+
+
